@@ -1,9 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function RegisterPage() {
+const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [success, setSuccess] = useState(false);
+
+  const { push } = useRouter();
 
   const handleRegister = async () => {
     const res = await fetch("/api/auth/register", {
@@ -12,8 +17,17 @@ export default function RegisterPage() {
     });
 
     const data = await res.json();
-    alert(data.message || data.error);
+    
+    if (data.message) {
+      setSuccess(true)
+    }
   };
+
+  useEffect(() => {
+    success && push('/login')
+  }, [success])
+
+   
 
   return (
     <div>
@@ -24,3 +38,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export default RegisterPage
